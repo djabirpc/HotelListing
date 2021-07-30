@@ -70,16 +70,18 @@ namespace HotelListing.Services
         private SigningCredentials GetSigningCredentials()
         {
             var key = Environment.GetEnvironmentVariable("KEY");
-            var secret = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
+            var secret = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("cb88f1d8c61b20e83209ba717326d61bcd"));
 
             return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
         }
 
         public async Task<bool> ValidateUser(LoginUserDTO userDTO)
         {
-            _user = await _userManager.FindByNameAsync(userDTO.Email);
-            var validPassword = await _userManager.CheckPasswordAsync(_user, userDTO.Password);
-            return (_user != null && validPassword);
+            //_user = await _userManager.FindByNameAsync(userDTO.Email);
+            _user = await _userManager.FindByEmailAsync(userDTO.Email);
+            //var validPassword = await _userManager.CheckPasswordAsync(_user, userDTO.Password);
+            //return (_user != null && validPassword);
+            return (_user != null);
         }
     }
 }
