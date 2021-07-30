@@ -9,11 +9,11 @@ namespace HotelListing.Models
     public class CreateHotelDTO
     {
         [Required]
-        [StringLength(maximumLength: 50, ErrorMessage = "Hotel Name is too long")]
+        [StringLength(maximumLength: 150, ErrorMessage = "Hotel Name Is Too Long")]
         public string Name { get; set; }
 
         [Required]
-        [StringLength(maximumLength: 50, ErrorMessage = "Address Name is too long")]
+        [StringLength(maximumLength: 250, ErrorMessage = "Address Name Is Too Long")]
         public string Address { get; set; }
 
         [Required]
@@ -23,9 +23,11 @@ namespace HotelListing.Models
         [Required]
         public int CountryId { get; set; }
     }
+
     public class HotelDTO : CreateHotelDTO
     {
         public int Id { get; set; }
         public CountryDTO Country { get; set; }
     }
+
 }

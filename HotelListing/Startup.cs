@@ -1,7 +1,13 @@
+using AutoMapper;
+using HotelListing.Configurations;
 using HotelListing.Data;
+using HotelListing.IRepository;
+using HotelListing.Repository;
+using HotelListing.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -10,13 +16,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System;
-using AutoMapper;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using HotelListing.Configurations;
-using HotelListing.IRepository;
-using HotelListing.Repository;
 
 namespace HotelListing
 {
@@ -34,32 +36,35 @@ namespace HotelListing
         {
 
             services.AddDbContext<DatabaseContext>(options =>
-                options.UseSqlServer(Configuration
-                    .GetConnectionString("sqlConnection"))
+                options.UseSqlServer(Configuration.GetConnectionString("sqlConnection"))
             );
 
-            services.AddCors(o =>
-            {
+
+            services.AddAuthentication();
+            services.ConfigureIdentity();
+            services.ConfigureJWT(Configuration);
+
+            services.AddCors(o => {
                 o.AddPolicy("AllowAll", builder =>
-                     builder.AllowAnyOrigin()
-                     .AllowAnyMethod()
-                     .AllowAnyHeader()
-                    );
+                    builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader());
             });
 
             services.AddAutoMapper(typeof(MapperInitilizer));
 
             services.AddTransient<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IAuthManager, AuthManager>();
 
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "HotelListing", Version = "v1" });
             });
 
-            services.AddControllers()
-                .AddNewtonsoftJson(op => 
-                    op.SerializerSettings.ReferenceLoopHandling =
-                        Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+            services.AddControllers().AddNewtonsoftJson(op => 
+                op.SerializerSettings.ReferenceLoopHandling = 
+                    Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -79,13 +84,11 @@ namespace HotelListing
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
-                //endpoints.MapControllerRoute(
-                //    name:"default",
-                //    pattern:"{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapControllers();
             });
         }

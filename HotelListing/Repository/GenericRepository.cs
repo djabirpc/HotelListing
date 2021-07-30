@@ -20,8 +20,6 @@ namespace HotelListing.Repository
             _db = _context.Set<T>();
         }
 
-
-
         public async Task Delete(int id)
         {
             var entity = await _db.FindAsync(id);
@@ -36,20 +34,21 @@ namespace HotelListing.Repository
         public async Task<T> Get(Expression<Func<T, bool>> expression, List<string> includes = null)
         {
             IQueryable<T> query = _db;
-            if(includes != null)
+            if (includes != null)
             {
                 foreach (var includePropery in includes)
                 {
                     query = query.Include(includePropery);
                 }
             }
-
+            
             return await query.AsNoTracking().FirstOrDefaultAsync(expression);
         }
 
         public async Task<IList<T>> GetAll(Expression<Func<T, bool>> expression = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, List<string> includes = null)
         {
             IQueryable<T> query = _db;
+
             if (expression != null)
             {
                 query = query.Where(expression);

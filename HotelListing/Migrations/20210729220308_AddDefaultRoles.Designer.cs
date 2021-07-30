@@ -4,20 +4,22 @@ using HotelListing.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace HotelListing.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20210729220308_AddDefaultRoles")]
+    partial class AddDefaultRoles
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .UseIdentityColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.1");
+                .HasAnnotation("ProductVersion", "5.0.8")
+                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("HotelListing.Data.ApiUser", b =>
                 {
@@ -95,7 +97,7 @@ namespace HotelListing.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -117,14 +119,14 @@ namespace HotelListing.Migrations
                         new
                         {
                             Id = 2,
-                            Name = "Bahamas",
-                            ShortName = "BS"
+                            Name = "Algerie",
+                            ShortName = "ALG"
                         },
                         new
                         {
                             Id = 3,
-                            Name = "Cayman Island",
-                            ShortName = "CI"
+                            Name = "Bahamas",
+                            ShortName = "BS"
                         });
                 });
 
@@ -133,7 +135,7 @@ namespace HotelListing.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
@@ -165,18 +167,18 @@ namespace HotelListing.Migrations
                         new
                         {
                             Id = 2,
-                            Address = "George Town",
-                            CountryId = 3,
-                            Name = "Comfort Suites",
-                            Rating = 4.2999999999999998
+                            Address = "Zeralda",
+                            CountryId = 2,
+                            Name = "Sheraton",
+                            Rating = 4.0
                         },
                         new
                         {
                             Id = 3,
-                            Address = "Nassua",
-                            CountryId = 2,
-                            Name = "Grand Palldium",
-                            Rating = 4.0
+                            Address = "George Town",
+                            CountryId = 3,
+                            Name = "Comfort Quites",
+                            Rating = 4.2999999999999998
                         });
                 });
 
@@ -209,15 +211,15 @@ namespace HotelListing.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "58930d31-7e48-4577-b467-4ae0de30d755",
-                            ConcurrencyStamp = "e5b508e1-c6fb-4104-bccc-b132923ce772",
+                            Id = "19cc8b1b-b2a5-435b-af70-6b69098bd405",
+                            ConcurrencyStamp = "8ada3c12-c957-41fa-972f-9e6419e2d765",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "4b8732f4-63dc-4a82-b507-2458120bc722",
-                            ConcurrencyStamp = "81444645-6c44-4b23-a775-62be8f8b462f",
+                            Id = "d9a4c262-13aa-4728-80ca-5316b0fe1432",
+                            ConcurrencyStamp = "fdce960c-486a-44ff-ac94-14be2a78edd9",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         });
@@ -228,7 +230,7 @@ namespace HotelListing.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -252,7 +254,7 @@ namespace HotelListing.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
