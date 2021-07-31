@@ -34,40 +34,27 @@ namespace HotelListing.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetHotels()
         {
-            try
-            {
-                var hotels = await _unitOfWork.Hotels.GetAll();
-                var results = _mapper.Map<IList<HotelDTO>>(hotels);
-                return Ok(results);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Something Went Wrong in the {nameof(GetHotels)}");
-                return StatusCode(500, "Internal Server Error. Please Try Again Later.");
-            }
+
+            var hotels = await _unitOfWork.Hotels.GetAll();
+            var results = _mapper.Map<IList<HotelDTO>>(hotels);
+            return Ok(results);
+
         }
 
-        
-        [HttpGet("{id:int}",Name = "GetHotel")]
+
+        [HttpGet("{id:int}", Name = "GetHotel")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetHotel(int id)
         {
-            try
-            {
-                var hotel = await _unitOfWork.Hotels.Get(q => q.Id == id, new List<string> { "Country" });
-                var result = _mapper.Map<HotelDTO>(hotel);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Something Went Wrong in the {nameof(GetHotel)}");
-                return StatusCode(500, "Internal Server Error. Please Try Again Later.");
-            }
+            var hotel = await _unitOfWork.Hotels.Get(q => q.Id == id, new List<string> { "Country" });
+            var result = _mapper.Map<HotelDTO>(hotel);
+            return Ok(result);
+
         }
 
 
-        [Authorize(Roles ="Administrator")]
+        [Authorize(Roles = "Administrator")]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -86,7 +73,7 @@ namespace HotelListing.Controllers
                 await _unitOfWork.Hotels.Insert(hotel);
                 await _unitOfWork.Save();
 
-                return CreatedAtRoute("GetHotel",new { id = hotel.Id },hotel);
+                return CreatedAtRoute("GetHotel", new { id = hotel.Id }, hotel);
             }
             catch (Exception ex)
             {
@@ -103,38 +90,31 @@ namespace HotelListing.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateHotel(int id, [FromBody] UpdateHotelDTO hotelDTO)
         {
-            if(!ModelState.IsValid || id < 1)
+            if (!ModelState.IsValid || id < 1)
             {
                 _logger.LogError($"Invalide UPDATE atempt in {nameof(UpdateHotel)}");
                 return BadRequest(ModelState);
             }
 
-            try
+            var hotel = await _unitOfWork.Hotels.Get(q => q.Id == id);
+            if (hotel == null)
             {
-                var hotel = await _unitOfWork.Hotels.Get(q => q.Id == id);
-                if(hotel == null)
-                {
-                    _logger.LogError($"Invalide UPDATE atempt in {nameof(UpdateHotel)}");
-                    return BadRequest("Submitted data is invalide");
-                }
-
-                //transfert hotelDTO to hotel
-                //source --> destination
-                _mapper.Map(hotelDTO, hotel);
-                _unitOfWork.Hotels.Update(hotel);
-                await _unitOfWork.Save();
-
-                return NoContent();
+                _logger.LogError($"Invalide UPDATE atempt in {nameof(UpdateHotel)}");
+                return BadRequest("Submitted data is invalide");
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Something Went Wrong in the {nameof(CreateHotel)}");
-                return StatusCode(500, "Internal Server Error. Please Try Again Later.");
-            }
+
+            //transfert hotelDTO to hotel
+            //source --> destination
+            _mapper.Map(hotelDTO, hotel);
+            _unitOfWork.Hotels.Update(hotel);
+            await _unitOfWork.Save();
+
+            return NoContent();
+
         }
 
         [Authorize]
-        [HttpPut("{id:int}")]
+        [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -146,25 +126,19 @@ namespace HotelListing.Controllers
                 return BadRequest(ModelState);
             }
 
-            try
-            {
-                var hotel = await _unitOfWork.Hotels.Get(q => q.Id == id);
-                if (hotel == null)
-                {
-                    _logger.LogError($"Invalide DELETE atempt in {nameof(DeleteHotel)}");
-                    return BadRequest("Submitted data is invalide");
-                }
 
-                await _unitOfWork.Hotels.Delete(id);
-                await _unitOfWork.Save();
-
-                return NoContent();
-            }
-            catch (Exception ex)
+            var hotel = await _unitOfWork.Hotels.Get(q => q.Id == id);
+            if (hotel == null)
             {
-                _logger.LogError(ex, $"Something Went Wrong in the {nameof(DeleteHotel)}");
-                return StatusCode(500, "Internal Server Error. Please Try Again Later.");
+                _logger.LogError($"Invalide DELETE atempt in {nameof(DeleteHotel)}");
+                return BadRequest("Submitted data is invalide");
             }
+
+            await _unitOfWork.Hotels.Delete(id);
+            await _unitOfWork.Save();
+
+            return NoContent();
+
         }
 
     }
